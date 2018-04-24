@@ -7,5 +7,7 @@ angular.module("App").controller("mainCtrl", function ($scope) {
 
   $scope.userMinPrice = $scope.minPrice;
   $scope.userMaxPrice = $scope.maxPrice;
+  
+  $scope.showValues = true;
 
 });

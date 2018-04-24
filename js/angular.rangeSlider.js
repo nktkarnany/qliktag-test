@@ -157,8 +157,8 @@
                     '<div class="ngrs-join"></div>',
                     '</div>',
                     '<div class="ngrs-value-runner">',
-                    '<div class="ngrs-value ngrs-value-min" ng-show="showValues"><div>{{filteredModelMin}}</div></div>',
-                    '<div class="ngrs-value ngrs-value-max" ng-show="showValues"><div>{{filteredModelMax}}</div></div>',
+                    '<div class="ngrs-value ngrs-value-min"><div>{{filteredModelMin}}</div></div>',
+                    '<div class="ngrs-value ngrs-value-max"><div>{{filteredModelMax}}</div></div>',
                     '</div>',
                     '</div>'
                 ].join(''),
