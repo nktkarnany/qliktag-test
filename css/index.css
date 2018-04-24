@@ -46,8 +46,46 @@ body {
   padding: 20px;
 }
 
+.card {
+  display: flex;
+  border: 1px solid #eee;
+  padding: 2em;
+  margin: 1.8em;
+}
+
+.type {
+  display: flex;
+}
+
+.one-way {
+  flex: 50%;
+  padding: 1em;
+}
+
+.return-way {
+  flex: 50%;
+  padding: 1em;
+}
+
+.card-body {
+  flex: 70%;
+  padding: 0.4em;
+}
+
+.card-action {
+  flex: 30%;
+  margin: auto;
+  text-align: center;
+}
+
 @media screen and (max-width: 700px) {
   .row {
+    flex-direction: column;
+  }
+  .type {
+    flex-direction: column;
+  }
+  .card {
     flex-direction: column;
   }
 }
