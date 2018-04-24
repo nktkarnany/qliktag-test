@@ -100,6 +100,27 @@ p {
 .btn {
   text-align: center;
   padding: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  cursor: pointer;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  background-color: #f1f1f1;
+}
+
+.btn-primary {
+  background-color: #2f96b4;
+  color: #fff;
+  padding: 0.6em 1.8em;
+}
+
+.btn-primary:hover {
+  background-color: rgb(47, 150, 180, 0.4);
+  color: #fff;
 }
 
 .btn-block {
@@ -112,7 +133,7 @@ p {
 }
 
 .main-header {
-  background-color: rgba(0, 46, 110, 0.4);
+  background-color: #ccc;
   color: #fff;
   padding: 1em 0 1em 2em;
 }
@@ -120,31 +141,68 @@ p {
 .card {
   display: flex;
   border: 1px solid #eee;
-  padding: 2em;
+  padding: 1em;
   margin: 1.8em;
 }
 
-.type {
+.card-body {
+  padding: 0.4em;
+  width: 100%;
+}
+
+.card-header {
+  color: rgba(0, 46, 110);
+  font-size: 1.8em;
+}
+
+.card-content {
   display: flex;
 }
 
 .one-way {
-  flex: 50%;
-  padding: 1em;
+  flex: 40%;
+  padding: 1em 0.5em;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
 }
 
-.return-way {
-  flex: 50%;
-  padding: 1em;
+.return {
+  flex: 40%;
+  padding: 1em 0.5em;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
 }
 
-.card-body {
-  flex: 70%;
-  padding: 0.4em;
+.time {
+  font-size: 18px;
+  color: #4a4a4a;
 }
 
-.card-action {
-  flex: 30%;
+.flight {
+  font-size: 12px;
+  color: #4d4d4d;
+  font-weight: 600;
+  opacity: 0.4;
+}
+
+.type {
+  font-size: 12px;
+  color: #4d4d4d;
+  font-weight: 600;
+  opacity: 0.4;
+}
+
+.city {
+  opacity: 0.4;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4d4d4d;
+}
+
+.action {
+  flex: 20%;
   margin: auto;
   text-align: center;
 }
@@ -153,7 +211,7 @@ p {
   .row {
     flex-direction: column;
   }
-  .type {
+  .card-content {
     flex-direction: column;
   }
   .card {
