@@ -1,0 +1,19 @@
+{
+  "name": "qliktag-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nktkarnany/qliktag-test.git"
+  },
+  "author": "Ankit K",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nktkarnany/qliktag-test/issues"
+  },
+  "homepage": "https://github.com/nktkarnany/qliktag-test#readme"
+}
