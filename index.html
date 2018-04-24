@@ -19,13 +19,16 @@
 
   <div class="row">
     <div class="side">
-      <div class="filter-container">
+      <div class="filter-container" ng-init="one_way = true">
         <h4>Refine Search</h4>
-        <button class="btn">One Way</button><button class="btn">Return</button>
+        <div class="tabs">
+          <button class="btn btn-block btn-tab ng-class:{'active': one_way}" ng-click="one_way = true">One Way</button>
+          <button class="btn btn-block btn-tab ng-class:{'active': !one_way}" ng-click="one_way = false">Return</button>
+        </div>
         <input class="form-control" type="text" placeholder="Enter Origin City" />
         <input class="form-control" type="text" placeholder="Enter Destination City" />
         <input class="form-control" type="date" />
-        <input class="form-control" type="date" />
+        <input ng-hide="one_way" class="form-control" type="date" />
         <input class="form-control" type="text" placeholder="Passengers" />
         <button class="btn btn-block">Search</button>
       </div>
@@ -36,7 +39,7 @@
     </div>
     <div class="main">
       <div class="main-header">
-        Pune > Delhi > Pune
+        Pune > Delhi<span ng-hide="one_way"> > Pune</span>
       </div>
       <div class="card">
         <div class="card-body">
@@ -57,7 +60,7 @@
                 <div class="city">DEL</div>
               </div>
             </div>
-            <div class="return">
+            <div class="return" ng-hide="one_way">
               <div>
                 <div class="time">12:00 PM</div>
                 <div class="city">DEL</div>

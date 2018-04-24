@@ -77,6 +77,11 @@ p {
   height: 100vh;
 }
 
+.tabs {
+  display: flex;
+  justify-content: center;
+}
+
 .form-control {
   padding: 5px;
   width: 100%;
@@ -125,6 +130,15 @@ p {
 
 .btn-block {
   width: 100%;
+}
+
+.btn-tab {
+  border-radius: 0;
+}
+
+.active {
+  background-color: rgb(47, 150, 180);
+  color: #fff;
 }
 
 .main {
