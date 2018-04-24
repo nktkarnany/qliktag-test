@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/nktkarnany/qliktag-test/issues"
   },
-  "homepage": "https://github.com/nktkarnany/qliktag-test#readme"
+  "homepage": "https://github.com/nktkarnany/qliktag-test#readme",
+  "dependencies": {
+    "angular": "^1.6.10",
+    "jquery": "^3.3.1"
+  }
 }

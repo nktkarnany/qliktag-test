@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial;
+  margin: 0;
+}
+
+.header h1 {
+  padding: 10px;
+  background: #9E9E9E;
+  color: white;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.side {
+  flex: 30%;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+.form-control {
+  padding: 5px;
+  width: 100%;
+  margin: 5px 0 5px 0;
+}
+
+.btn {
+  text-align: center;
+  padding: 5px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.main {
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+
+@media screen and (max-width: 700px) {
+  .row {
+    flex-direction: column;
+  }
+}
