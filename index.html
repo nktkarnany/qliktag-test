@@ -19,18 +19,19 @@
 
   <div class="row">
     <div class="side">
-      <div class="filter-container" ng-init="one_way = true">
+      <div class="filter-container">
         <h4>Refine Search</h4>
         <div class="tabs">
-          <button class="btn btn-block btn-tab ng-class:{'active': one_way}" ng-click="one_way = true">One Way</button>
-          <button class="btn btn-block btn-tab ng-class:{'active': !one_way}" ng-click="one_way = false">Return</button>
+          <button class="btn btn-block btn-tab ng-class:{'active': filter.oneWay}" ng-click="filter.oneWay = true">One Way</button>
+          <button class="btn btn-block btn-tab ng-class:{'active': !filter.oneWay}" ng-click="filter.oneWay = false">Return</button>
         </div>
         <autocomplete placeholder="Enter Origin City" val="filter.srcCity" values="allCities" is-city="true"></autocomplete>
         <autocomplete placeholder="Enter Destination City" val="filter.destCity"  values="allCities" is-city="true"></autocomplete>
         <autocomplete placeholder="Departure Date" val="filter.depDate" values="allDates"></autocomplete>
-        <autocomplete placeholder="Return Date" val="filter.retDate" values="allDates" ng-hide="one_way"></autocomplete>
+        <autocomplete placeholder="Return Date" val="filter.retDate" values="allDates" ng-hide="filter.oneWay"></autocomplete>
         <input class="form-control" type="text" placeholder="Passengers" />
         <button class="btn btn-block" ng-click="search()">Search</button>
+        <p class="err" ng-if="filter.err != ''">{{filter.err}}</p>
       </div>
       <div class="slider-container">
         <h4>Refine Price</h4>
@@ -40,14 +41,14 @@
     <div class="main">
       <div class="main-header">
         <div class="journey-city">
-          Pune > Delhi<span ng-hide="one_way"> > Pune</span>
+          Pune > Delhi<span ng-hide="filter.oneWay"> > Pune</span>
         </div>
         <div>
           <div>Depart - 12th May</div>
-          <div ng-hide="one_way">Return - 14th May</div>
+          <div ng-hide="filter.oneWay">Return - 14th May</div>
         </div>
       </div>
-      <flight-card ng-repeat="flight in searched_flights" flight="flight" is-one-way="one_way"></flight-card>
+      <flight-card ng-repeat="flight in searched_flights" flight="flight" is-one-way="filter.oneWay"></flight-card>
     </div>
   </div>
 

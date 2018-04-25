@@ -16,57 +16,47 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
   $scope.allCities = Flight.allCities;
   
   $scope.filter = {
-    depDate: ''
+    srcCity: '',
+    destCity: '',
+    depDate: '',
+    retDate: '',
+    err: '',
+    oneWay: true
   };
   
-  $scope.search = function() {
-    console.log($scope.filter);
+  $scope.searched_flights = [];
+  
+  var search = function () {
+    if ($scope.filter.srcCity == '') {
+      $scope.filter.err = "Please enter your source city.";
+      return;
+    } else if ($scope.filter.destCity == '') {
+      $scope.filter.err = "Please enter your destination city.";
+      return;
+    } else if ($scope.filter.depDate == '') {
+      $scope.filter.err = "Please enter your departure date.";
+      return;
+    } else if ($scope.filter.retDate == '' && $scope.filter.oneWay == false) {
+      $scope.filter.err = "Please enter your departure date.";
+      return;
+    }
+    $scope.filter.price = [$scope.price.userMin, $scope.price.userMax];
+    Flight.searchFlights($scope.filter).then(
+      function(res) {
+        $scope.searched_flights = res.data;
+      },
+      function (err) {
+        console.log(err);
+      });
   }
   
-  $scope.searched_flights = [
-    {
-      dep: {
-        source: {
-          city: {
-            name: "Pune",
-            code: "PNQ"
-          },
-          time: "10:00AM"
-        },
-        destination: {
-          city: {
-            name: "Delhi",
-            code: "DEL"
-          },
-          time: "12:00PM"
-        },
-        flight_no: "AOL-31",
-        price: 4500
-      },
-      ret: {
-        source: {
-          city: {
-            name: "Delhi",
-            code: "DEL"
-          },
-          time: "3:00PM"
-        },
-        destination: {
-          city: {
-            name: "Pune",
-            code: "PNQ"
-          },
-          time: "6:00PM"
-        },
-        flight_no: "AOL-33",
-        price: 4800
-      }
-    }
-  ];
+  $scope.search = function() {
+    search();
+  }
 
 }]);
 
-app.service('Flight', [function () {
+app.service('Flight', ['$q', '$filter', function ($q, $filter) {
   
   this.allDates = ['2nd May', '4th May'];
   this.allCities = [
@@ -79,7 +69,7 @@ app.service('Flight', [function () {
     }
   ];
   
-  var allFlights = [
+  var oneWayFlights = [
     {
       date: "2nd May",
       source: {
@@ -119,7 +109,89 @@ app.service('Flight', [function () {
     }
   ];
   
+  var oneWayAndReturnFlights = [
+    {
+      dep: {
+        date: "2nd May",
+        source: {
+          city: {
+            name: "Pune",
+            code: "PNQ"
+          },
+          time: "10:00AM"
+        },
+        destination: {
+          city: {
+            name: "Delhi",
+            code: "DEL"
+          },
+          time: "12:00PM"
+        },
+        flight_no: "AOL-31",
+        price: 4500
+      },
+      ret: {
+        date: "4th May",
+        source: {
+          city: {
+            name: "Delhi",
+            code: "DEL"
+          },
+          time: "3:00PM"
+        },
+        destination: {
+          city: {
+            name: "Pune",
+            code: "PNQ"
+          },
+          time: "6:00PM"
+        },
+        flight_no: "AOL-33",
+        price: 4700
+      }
+    }
+  ];
+  
+  this.searchFlights = function (filterParams) {
+    
+    var deferred = $q.defer();
+    
+    var filteredFlights = [];
+    
+    if (filterParams.oneWay)
+      filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
+    else
+      filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
+    
+    if (filteredFlights)
+      deferred.resolve({code: 200, data: filteredFlights});
+    else
+      deferred.reject({code: 404, data: []});
+    
+    return deferred.promise;
+  }
+  
 }]);
+
+app.filter('flightsFilter', function() {
+  return function(flights, filter) {
+    var newFlights = [];
+    flights.forEach(function (flight) { 
+      if (filter.oneWay) {
+        if (flight.date == filter.depDate && flight.source.city.code == filter.srcCity && flight.destination.city.code == filter.destCity) {
+          newFlights.push({
+            dep: flight
+          });
+        }
+      } else {
+        if (flight.dep.date == filter.depDate && flight.ret.date == filter.retDate && flight.dep.source.city.code == filter.srcCity && flight.dep.destination.city.code == filter.destCity && flight.ret.source.city.code == filter.destCity && flight.ret.destination.city.code == filter.srcCity) {
+          newFlights.push(flight);
+        }
+      }
+    });
+    return newFlights;
+  }
+});
 
 app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filter) {
   return {
@@ -138,7 +210,10 @@ app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filte
           $scope.items = [];
       }
       $scope.selectItem = function (item) {
-        $scope.term = item;
+        if ($scope.isCity)
+          $scope.term = item.code;
+        else
+          $scope.term = item;
         $scope.items = [];
       }
     },
