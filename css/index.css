@@ -86,7 +86,7 @@ p {
 .form-control {
   padding: 5px;
   width: 100%;
-  margin: 5px 0 5px 0;
+  margin: 10px 0 0 0;
 }
 
 .filter-container {
@@ -94,6 +94,49 @@ p {
   padding: 1em;
   margin: 0.4em;
   background-color: #fff;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+}
+
+.open>.dropdown-menu {
+  display: block;
+  z-index: 1;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  float: left;
+  width: 100%;
+  padding: 5px 0;
+  margin: 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.15);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+
+ul.dropdown-menu li {
+  display: list-item;
+}
+
+ul.dropdown-menu a {
+  text-decoration: none !important;
+  z-index: 1;
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
 }
 
 .slider-container {
@@ -131,6 +174,7 @@ p {
 
 .btn-block {
   width: 100%;
+  margin-top: 1em;
 }
 
 .btn-tab {
