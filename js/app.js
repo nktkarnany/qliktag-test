@@ -79,6 +79,12 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     search();
   }
   
+  $scope.priceChanged = function () {
+    $scope.$apply(function() {
+      search();
+    });
+  }
+  
   // Searching With Initial Search Filter
   search();
 
@@ -196,7 +202,7 @@ app.service('Flight', ['$q', '$filter', '$timeout', function ($q, $filter, $time
         deferred.resolve({code: 200, data: filteredFlights});
       else
         deferred.reject({code: 404, data: []});
-    }, 3000);
+    }, 1000);
     
     return deferred.promise;
   }
@@ -233,24 +239,29 @@ app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filte
       isCity: '@'
     },
     controller: function ($scope) {
+      
       $scope.search = function (s) {
-        if (s != '')
-          $scope.items = $filter('filter')($scope.values, s);
-        else
-          $scope.items = [];
+        $scope.open = true;
+        $scope.items = $filter('filter')($scope.values, s);
       }
+      
       $scope.selectItem = function (item) {
         if ($scope.isCity)
           $scope.term = item.code;
         else
           $scope.term = item;
-        $scope.items = [];
+        $scope.open = false;
       }
+      
+      $scope.hide = function () {
+        $scope.open = false;
+      }
+      
     },
-    template: `<div class="dropdown ng-class:{'open':items.length > 0}">
-                  <input type="text" class="form-control" placeholder="{{placeholder}}" aria-haspopup="true" aria-expanded="false" ng-model="term" ng-change="search(term)">
+    template: `<div class="dropdown ng-class:{'open': open}">
+                  <input type="text" class="form-control" placeholder="{{placeholder}}" aria-haspopup="true" aria-expanded="false" ng-model="term" ng-focus="search(term)" ng-blur="hide()">
                   <ul class="dropdown-menu" aria-labelledby="autocomplete">
-                    <li ng-repeat="item in items" ng-click="selectItem(item)"><a href=""><span ng-if="isCity">{{item.name}} - {{item.code}}</span><span ng-if="!isCity">{{item}}</span></a></li>
+                    <li ng-repeat="item in items" ng-mousedown="selectItem(item)"><a href=""><span ng-if="isCity">{{item.name}} - {{item.code}}</span><span ng-if="!isCity">{{item}}</span></a></li>
                   </ul>
                 </div>`
     };

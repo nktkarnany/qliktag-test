@@ -104,7 +104,7 @@ p {
   display: none;
 }
 
-.open>.dropdown-menu {
+.open > .dropdown-menu {
   display: block;
   z-index: 1;
   position: absolute;
