@@ -38,16 +38,20 @@
       </div>
     </div>
     <div class="main">
-      <div class="main-header">
+      <div class="loader" ng-if="!(!searched.loading && searched.flights.length > 0)">
+        <div class="spinner" ng-if="searched.loading"></div>
+        <span class="no-results" ng-if="!searched.loading && searched.flights.length == 0">No Flights For This Search</span>
+      </div>
+      <div class="main-header" ng-if="!searched.loading && searched.flights.length > 0">
         <div class="journey-city">
-          Pune > Delhi<span ng-hide="filter.oneWay"> > Pune</span>
+          Pune > Delhi<span ng-hide="searched.oneWay"> > Pune</span>
         </div>
         <div>
-          <div>Depart - 12th May</div>
-          <div ng-hide="filter.oneWay">Return - 14th May</div>
+          <div>Depart - {{searched.depDate}}</div>
+          <div ng-hide="searched.oneWay">Return - {{searched.retDate}}</div>
         </div>
       </div>
-      <flight-card ng-repeat="flight in searched_flights" flight="flight" is-one-way="filter.oneWay"></flight-card>
+      <flight-card ng-repeat="flight in searched.flights" flight="flight" is-one-way="searched.oneWay"></flight-card>
     </div>
   </div>
 

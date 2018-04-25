@@ -2,7 +2,7 @@ var app = angular.module("App", ['ui-rangeSlider']);
 
 app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Flight, $filter) {
 
-  // Intializations
+  // Price Slider Intialization
   $scope.price = {
     min: 0,
     max: 10000,
@@ -10,23 +10,35 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     userMax: 10000
   };
   
-  // Populating dates
+  // Ideally, these should be populated inside the directive by 
+  // making an http call to fetch them but for simplicity I am getting them from the service
+  
+  // Populating dates in autocomplete 
   $scope.allDates = Flight.allDates;
-  // Populating Cities
+  
+  // Populating Cities in autocomplete
   $scope.allCities = Flight.allCities;
   
+  // Searching filter conditions
   $scope.filter = {
-    srcCity: '',
-    destCity: '',
-    depDate: '',
+    srcCity: 'PNQ',
+    destCity: 'DEL',
+    depDate: '2nd May',
     retDate: '',
     err: '',
     oneWay: true
   };
   
-  $scope.searched_flights = [];
+  $scope.searched = {
+    flights: [],
+    depDate: '',
+    retDate: '',
+    oneWay: false,
+    loading: false
+  }
   
   var search = function () {
+    // validations for input fields in the search filter
     if ($scope.filter.srcCity == '') {
       $scope.filter.err = "Please enter your source city.";
       return;
@@ -40,23 +52,39 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
       $scope.filter.err = "Please enter your departure date.";
       return;
     }
+    // Also adding the price range to the filter so that all the filter conditions are inside filter literal
     $scope.filter.price = [$scope.price.userMin, $scope.price.userMax];
+    
+    // setting the loading to true to display the loader in the view
+    $scope.searched.loading = true;
+    
+    $scope.searched.flights = [];
+    
+    // Fetching the searched results from the service which is built upon '$q' service of angularjs
     Flight.searchFlights($scope.filter).then(
       function(res) {
-        $scope.searched_flights = res.data;
+        $scope.searched.flights = res.data;
+        $scope.searched.depDate = $scope.filter.depDate;
+        $scope.searched.retDate = $scope.filter.retDate;
+        $scope.searched.oneWay = $scope.filter.oneWay;
+        $scope.searched.loading = false;
       },
       function (err) {
         console.log(err);
+        $scope.searched.loading = false;
       });
   }
   
   $scope.search = function() {
     search();
   }
+  
+  // Searching With Initial Search Filter
+  search();
 
 }]);
 
-app.service('Flight', ['$q', '$filter', function ($q, $filter) {
+app.service('Flight', ['$q', '$filter', '$timeout', function ($q, $filter, $timeout) {
   
   this.allDates = ['2nd May', '4th May'];
   this.allCities = [
@@ -158,15 +186,17 @@ app.service('Flight', ['$q', '$filter', function ($q, $filter) {
     
     var filteredFlights = [];
     
-    if (filterParams.oneWay)
-      filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
-    else
-      filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
+    $timeout(function () {
+      if (filterParams.oneWay)
+        filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
+      else
+        filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
     
-    if (filteredFlights)
-      deferred.resolve({code: 200, data: filteredFlights});
-    else
-      deferred.reject({code: 404, data: []});
+      if (filteredFlights)
+        deferred.resolve({code: 200, data: filteredFlights});
+      else
+        deferred.reject({code: 404, data: []});
+    }, 3000);
     
     return deferred.promise;
   }

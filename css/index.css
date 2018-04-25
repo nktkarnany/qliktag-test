@@ -191,6 +191,35 @@ ul.dropdown-menu a {
   background-color: white;
 }
 
+.main .loader {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 10em;
+  text-align: center;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner:before {
+  content: '';
+  position: absolute;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #333;
+  animation: spinner .6s linear infinite;
+}
+
+.main .loader .no-results {
+  color: #ccc;
+}
+
 .main-header {
   background-color: #aaa;
   color: #fff;
