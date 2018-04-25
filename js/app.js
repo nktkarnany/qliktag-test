@@ -96,7 +96,7 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
 app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', function ($q, $filter, $timeout, JsonService) {
   
   // possible dates in the departure and return date input fields
-  this.allDates = ['2nd May', '4th May'];
+  this.allDates = ['2nd May', '4th May', '6th May', '19th May'];
   
   // possible cities in the source and destination city input fields
   this.allCities = [
@@ -106,6 +106,18 @@ app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', function ($q,
     }, {
       name: "Delhi",
       code: "DEL"
+    }, {
+      name: "Mumbai",
+      code: "BOM"
+    }, {
+      name: "Bangalore",
+      code: "BGL"
+    }, {
+      name: "Hyderabad",
+      code: "HYD"
+    }, {
+      name: "Chennai",
+      code: "CHN"
     }
   ];
   
@@ -122,19 +134,21 @@ app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', function ($q,
     
     var filteredFlights = [];
     
-    JsonService.allFlights.get({}, function (data) {
-      var oneWayFlights = data.oneWay;
-      var oneWayAndReturnFlights = data.return;
-      if (filterParams.oneWay)
-        filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
-      else
-        filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
+    $timeout(function () {
+      JsonService.allFlights.get({}, function (data) {
+        var oneWayFlights = data.oneWay;
+        var oneWayAndReturnFlights = data.return;
+        if (filterParams.oneWay)
+          filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
+        else
+          filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
 
-      if (filteredFlights)
-        deferred.resolve({code: 200, data: filteredFlights});
-      else
-        deferred.reject({code: 404, data: []});
-    });
+        if (filteredFlights)
+          deferred.resolve({code: 200, data: filteredFlights});
+        else
+          deferred.reject({code: 404, data: []});
+      });
+    }, 1000);
     
     return deferred.promise;
   }
