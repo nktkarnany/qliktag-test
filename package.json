@@ -18,6 +18,7 @@
   "homepage": "https://github.com/nktkarnany/qliktag-test#readme",
   "dependencies": {
     "angular": "^1.6.10",
+    "angular-resource": "^1.6.10",
     "jquery": "^3.3.1"
   }
 }

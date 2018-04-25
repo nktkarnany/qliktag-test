@@ -1,0 +1,84 @@
+{
+  "oneWay": [
+    {
+      "date": "2nd May",
+      "source": {
+        "city": {
+          "name": "Pune",
+          "code": "PNQ"
+        },
+        "time": "10:00AM"
+      },
+      "destination": {
+        "city": {
+          "name": "Delhi",
+          "code": "DEL"
+        },
+        "time": "12:00PM"
+      },
+      "flight_no": "AOL-31",
+      "price": 4500
+  },
+    {
+      "date": "4th May",
+      "source": {
+        "city": {
+          "name": "Delhi",
+          "code": "DEL"
+        },
+        "time": "3:00PM"
+      },
+      "destination": {
+        "city": {
+          "name": "Pune",
+          "code": "PNQ"
+        },
+        "time": "6:00PM"
+      },
+      "flight_no": "AOL-33",
+      "price": 4700
+    }
+  ],
+  "return": [
+    {
+      "dep": {
+        "date": "2nd May",
+        "source": {
+          "city": {
+            "name": "Pune",
+            "code": "PNQ"
+          },
+          "time": "10:00AM"
+        },
+        "destination": {
+          "city": {
+            "name": "Delhi",
+            "code": "DEL"
+          },
+          "time": "12:00PM"
+        },
+        "flight_no": "AOL-31",
+        "price": 4500
+      },
+      "ret": {
+        "date": "4th May",
+        "source": {
+          "city": {
+            "name": "Delhi",
+            "code": "DEL"
+          },
+          "time": "3:00PM"
+        },
+        "destination": {
+          "city": {
+            "name": "Pune",
+            "code": "PNQ"
+          },
+          "time": "6:00PM"
+        },
+        "flight_no": "AOL-33",
+        "price": 4700
+      }
+    }
+  ]
+}

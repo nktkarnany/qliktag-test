@@ -1,7 +1,7 @@
-var app = angular.module("App", ['ui-rangeSlider']);
+var app = angular.module("App", ['ui-rangeSlider', 'ngResource']);
 
 app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Flight, $filter) {
-
+  
   // Price Slider Intialization
   $scope.price = {
     min: 0,
@@ -29,6 +29,7 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     oneWay: true
   };
   
+  // Literal to populate data after searching
   $scope.searched = {
     flights: [],
     depDate: '',
@@ -37,6 +38,7 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     loading: false
   }
   
+  // search function
   var search = function () {
     // validations for input fields in the search filter
     if ($scope.filter.srcCity == '') {
@@ -84,15 +86,19 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
       search();
     });
   }
-  
+
   // Searching With Initial Search Filter
   search();
 
 }]);
 
-app.service('Flight', ['$q', '$filter', '$timeout', function ($q, $filter, $timeout) {
+// This service holds all the data for flights
+app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', function ($q, $filter, $timeout, JsonService) {
   
+  // possible dates in the departure and return date input fields
   this.allDates = ['2nd May', '4th May'];
+  
+  // possible cities in the source and destination city input fields
   this.allCities = [
     {
       name: "Pune",
@@ -103,112 +109,44 @@ app.service('Flight', ['$q', '$filter', '$timeout', function ($q, $filter, $time
     }
   ];
   
-  var oneWayFlights = [
-    {
-      date: "2nd May",
-      source: {
-        city: {
-          name: "Pune",
-          code: "PNQ"
-        },
-        time: "10:00AM"
-      },
-      destination: {
-        city: {
-          name: "Delhi",
-          code: "DEL"
-        },
-        time: "12:00PM"
-      },
-      flight_no: "AOL-31",
-      price: 4500
-    }, {
-      date: "4th May",
-      source: {
-        city: {
-          name: "Delhi",
-          code: "DEL"
-        },
-        time: "3:00PM"
-      },
-      destination: {
-        city: {
-          name: "Pune",
-          code: "PNQ"
-        },
-        time: "6:00PM"
-      },
-      flight_no: "AOL-33",
-      price: 4700
-    }
-  ];
+  // variable to save one way flights array
+  var oneWayFlights = [];
+  // variable to save return flights array
+  var oneWayAndReturnFlights = [];
   
-  var oneWayAndReturnFlights = [
-    {
-      dep: {
-        date: "2nd May",
-        source: {
-          city: {
-            name: "Pune",
-            code: "PNQ"
-          },
-          time: "10:00AM"
-        },
-        destination: {
-          city: {
-            name: "Delhi",
-            code: "DEL"
-          },
-          time: "12:00PM"
-        },
-        flight_no: "AOL-31",
-        price: 4500
-      },
-      ret: {
-        date: "4th May",
-        source: {
-          city: {
-            name: "Delhi",
-            code: "DEL"
-          },
-          time: "3:00PM"
-        },
-        destination: {
-          city: {
-            name: "Pune",
-            code: "PNQ"
-          },
-          time: "6:00PM"
-        },
-        flight_no: "AOL-33",
-        price: 4700
-      }
-    }
-  ];
-  
+  // A method which return a promise
+  // This method fetches the json from the local file and performs a search based on the filter params
   this.searchFlights = function (filterParams) {
     
     var deferred = $q.defer();
     
     var filteredFlights = [];
     
-    $timeout(function () {
+    JsonService.allFlights.get({}, function (data) {
+      var oneWayFlights = data.oneWay;
+      var oneWayAndReturnFlights = data.return;
       if (filterParams.oneWay)
         filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
       else
         filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
-    
+
       if (filteredFlights)
         deferred.resolve({code: 200, data: filteredFlights});
       else
         deferred.reject({code: 404, data: []});
-    }, 1000);
+    });
     
     return deferred.promise;
   }
   
 }]);
 
+// this service fetches the json file from the data directory
+app.service('JsonService', ['$resource', function($resource) {
+  this.allFlights = $resource('/data/allFlights.json');
+}]);
+
+// this filter acts like a database query operation for one way and return flight arrays
 app.filter('flightsFilter', function() {
   return function(flights, filter) {
     var newFlights = [];
@@ -229,6 +167,7 @@ app.filter('flightsFilter', function() {
   }
 });
 
+// a reusable autocomplete input elements used for all the input types in the search field
 app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filter) {
   return {
     restrict: 'E',
@@ -259,7 +198,7 @@ app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filte
       
     },
     template: `<div class="dropdown ng-class:{'open': open}">
-                  <input type="text" class="form-control" placeholder="{{placeholder}}" aria-haspopup="true" aria-expanded="false" ng-model="term" ng-focus="search(term)" ng-blur="hide()">
+                  <input type="text" class="form-control" placeholder="{{placeholder}}" aria-haspopup="true" aria-expanded="false" ng-model="term" ng-change="search(term)" ng-focus="search(term)" ng-blur="hide()">
                   <ul class="dropdown-menu" aria-labelledby="autocomplete">
                     <li ng-repeat="item in items" ng-mousedown="selectItem(item)"><a href=""><span ng-if="isCity">{{item.name}} - {{item.code}}</span><span ng-if="!isCity">{{item}}</span></a></li>
                   </ul>
@@ -267,6 +206,7 @@ app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filte
     };
 }]);
 
+// a directive to display flight card in the search results
 app.directive('flightCard', [function () {
   return {
     restrict: 'E',
