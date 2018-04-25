@@ -6,8 +6,8 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
   $scope.price = {
     min: 0,
     max: 10000,
-    userMin: 2000,
-    userMax: 7000
+    userMin: 0,
+    userMax: 10000
   };
   
   // Populating dates
@@ -178,13 +178,13 @@ app.filter('flightsFilter', function() {
     var newFlights = [];
     flights.forEach(function (flight) { 
       if (filter.oneWay) {
-        if (flight.date == filter.depDate && flight.source.city.code == filter.srcCity && flight.destination.city.code == filter.destCity) {
+        if (flight.date == filter.depDate && flight.source.city.code == filter.srcCity && flight.destination.city.code == filter.destCity && flight.price > filter.price[0] && flight.price < filter.price[1]) {
           newFlights.push({
             dep: flight
           });
         }
       } else {
-        if (flight.dep.date == filter.depDate && flight.ret.date == filter.retDate && flight.dep.source.city.code == filter.srcCity && flight.dep.destination.city.code == filter.destCity && flight.ret.source.city.code == filter.destCity && flight.ret.destination.city.code == filter.srcCity) {
+        if (flight.dep.date == filter.depDate && flight.ret.date == filter.retDate && flight.dep.source.city.code == filter.srcCity && flight.dep.destination.city.code == filter.destCity && flight.ret.source.city.code == filter.destCity && flight.ret.destination.city.code == filter.srcCity && (flight.dep.price + flight.ret.price) > filter.price[0] && (flight.dep.price + flight.ret.price) < filter.price[1]) {
           newFlights.push(flight);
         }
       }

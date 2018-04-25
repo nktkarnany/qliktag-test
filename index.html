@@ -25,17 +25,16 @@
           <button class="btn btn-block btn-tab ng-class:{'active': filter.oneWay}" ng-click="filter.oneWay = true">One Way</button>
           <button class="btn btn-block btn-tab ng-class:{'active': !filter.oneWay}" ng-click="filter.oneWay = false">Return</button>
         </div>
-        <autocomplete placeholder="Enter Origin City" val="filter.srcCity" values="allCities" is-city="true"></autocomplete>
+        <autocomplete placeholder="Enter Source City" val="filter.srcCity" values="allCities" is-city="true"></autocomplete>
         <autocomplete placeholder="Enter Destination City" val="filter.destCity"  values="allCities" is-city="true"></autocomplete>
         <autocomplete placeholder="Departure Date" val="filter.depDate" values="allDates"></autocomplete>
         <autocomplete placeholder="Return Date" val="filter.retDate" values="allDates" ng-hide="filter.oneWay"></autocomplete>
-        <input class="form-control" type="text" placeholder="Passengers" />
         <button class="btn btn-block" ng-click="search()">Search</button>
         <p class="err" ng-if="filter.err != ''">{{filter.err}}</p>
       </div>
       <div class="slider-container">
         <h4>Refine Price</h4>
-        <div range-slider min="price.min" max="price.max" model-min="price.userMin" model-max="price.userMax" step="5" filter="currency:'₹'"></div>
+        <div range-slider min="price.min" max="price.max" model-min="price.userMin" model-max="price.userMax" step="5" filter="currency:'₹'" on-handle-up="search()"></div>
       </div>
     </div>
     <div class="main">
