@@ -55,14 +55,15 @@ p {
   margin-bottom: 20px;
 }
 
+.header {
+  background-color: rgb(47, 150, 180);
+}
+
 .header h1 {
   padding: 0.8em 0 0.8em 1.4em;
-  color: #002e6e;
+  color: #fff;
   margin: 0;
-  font-weight: normal;
   font-size: 1.6em;
-  border-bottom-style: inset;
-  border-width: 1.4px;
 }
 
 .row {
@@ -71,7 +72,7 @@ p {
 }
 
 .side {
-  flex: 30%;
+  flex: 25%;
   background-color: #002e6e;
   padding: 20px;
   height: 100vh;
@@ -142,19 +143,25 @@ p {
 }
 
 .main {
-  flex: 70%;
+  flex: 75%;
   background-color: white;
 }
 
 .main-header {
-  background-color: #ccc;
+  background-color: #aaa;
   color: #fff;
-  padding: 1em 0 1em 2em;
+  padding: 1em 2em 1em 2em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.journey-city {
+  margin: auto 0;
 }
 
 .card {
   display: flex;
-  border: 1px solid #eee;
+  border: 1px solid #ccc;
   padding: 1em;
   margin: 1.8em;
 }
@@ -164,7 +171,7 @@ p {
   width: 100%;
 }
 
-.card-header {
+.price {
   color: rgba(0, 46, 110);
   font-size: 1.8em;
 }

@@ -39,48 +39,15 @@
     </div>
     <div class="main">
       <div class="main-header">
-        Pune > Delhi<span ng-hide="one_way"> > Pune</span>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-header">₹9500</div>
-          <div class="card-content">
-            <div class="one-way">
-              <div>
-                <div class="time">10:00 AM</div>
-                <div class="city">PNQ</div>
-              </div>
-              <div>
-                <div class="flight">AOL-31</div>
-                <div><img src="./img/srp_arrow.svg"></div>
-                <div class="type">Departure</div>
-              </div>
-              <div>
-                <div class="time">12:00 PM</div>
-                <div class="city">DEL</div>
-              </div>
-            </div>
-            <div class="return" ng-hide="one_way">
-              <div>
-                <div class="time">12:00 PM</div>
-                <div class="city">DEL</div>
-              </div>
-              <div>
-                <div class="flight">AOL-31</div>
-                <div><img src="./img/srp_arrow.svg"></div>
-                <div class="type">Return</div>
-              </div>
-              <div>
-                <div class="time">10:00 AM</div>
-                <div class="city">PNQ</div>
-              </div>
-            </div>
-            <div class="action">
-              <button class="btn btn-primary">BOOK</button>
-            </div>
-          </div>
+        <div class="journey-city">
+          Pune > Delhi<span ng-hide="one_way"> > Pune</span>
+        </div>
+        <div>
+          <div>Depart - 12th May</div>
+          <div ng-hide="one_way">Return - 14th May</div>
         </div>
       </div>
+      <flight-card ng-repeat="flight in searched_flights" flight="flight" is-one-way="one_way"></flight-card>
     </div>
   </div>
 
