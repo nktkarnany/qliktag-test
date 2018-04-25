@@ -5,16 +5,16 @@ An angular 1.x application to build a flight search engine.
 
 ### Install NodeJS dependencies 
 ```bash
-$ sudo npm install
+$ npm install
 ```
 
 ### Install liver-server to create a server
 ```bash
-$ npm install -g live-server
+$ sudo npm install -g live-server
 ```
 
 ### Run the app
-Use `live-server` to run the app for a browser preview from the root directory
+Use `live-server` to run the app in the browser from the root directory
 
 ## Credits
 
