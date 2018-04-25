@@ -15,31 +15,6 @@ body {
   margin: 0;
 }
 
-hr {
-  max-width: 80px;
-  border-width: 3px;
-  opacity: 0.09;
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-hr.light {
-  border-color: #fff;
-}
-
-a {
-  color: #9c27b0;
-  -webkit-transition: all .35s;
-  -moz-transition: all .35s;
-  transition: all .35s;
-}
-
-a:hover,
-a:focus {
-  color: #9c27c1;
-  outline: 0;
-}
-
 h1,
 h2,
 h3,
@@ -49,11 +24,12 @@ h6 {
   font-family: 'Questrial', 'Helvetica Neue', Arial, sans-serif;
 }
 
-p {
-  font-size: 17px;
-  line-height: 1.7;
-  margin-bottom: 20px;
+.err {
+  font-size: 1em;
+  color: #ff0000;
 }
+
+/* Style for header starts */
 
 .header {
   background-color: rgb(47, 150, 180);
@@ -63,19 +39,40 @@ p {
   padding: 0.8em 0 0.8em 1.4em;
   color: #fff;
   margin: 0;
-  font-size: 1.6em;
+  font-size: 1.4em;
 }
+
+/* Style for header ends */
+
+
+/* Style for row container starts */
 
 .row {
   display: flex;
   flex-wrap: wrap;
 }
 
+/* Style for side element starts */
+
 .side {
   flex: 25%;
   background-color: #002e6e;
   padding: 20px;
   height: 100vh;
+}
+
+.filter-container {
+  border: 1px solid #eee;
+  padding: 1em;
+  margin: 0.4em;
+  background-color: #fff;
+}
+
+.slider-container {
+  border: 1px solid #eee;
+  padding: 0.6em;
+  margin: 0.4em;
+  background-color: #fff;
 }
 
 .tabs {
@@ -87,13 +84,6 @@ p {
   padding: 5px;
   width: 100%;
   margin: 10px 0 0 0;
-}
-
-.filter-container {
-  border: 1px solid #eee;
-  padding: 1em;
-  margin: 0.4em;
-  background-color: #fff;
 }
 
 .dropdown {
@@ -139,13 +129,6 @@ ul.dropdown-menu a {
   white-space: nowrap;
 }
 
-.slider-container {
-  border: 1px solid #eee;
-  padding: 0.6em;
-  margin: 0.4em;
-  background-color: #fff;
-}
-
 .btn {
   text-align: center;
   padding: 5px;
@@ -185,6 +168,11 @@ ul.dropdown-menu a {
   background-color: rgb(47, 150, 180);
   color: #fff;
 }
+
+/* Style for side element ends */
+
+
+/* Style for main div starts */
 
 .main {
   flex: 75%;
@@ -300,6 +288,8 @@ ul.dropdown-menu a {
   margin: auto;
   text-align: center;
 }
+
+/* Style for main div ends */
 
 @media screen and (max-width: 700px) {
   .row {
