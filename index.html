@@ -25,10 +25,19 @@
           <button class="btn btn-block btn-tab ng-class:{'active': filter.oneWay}" ng-click="filter.oneWay = true">One Way</button>
           <button class="btn btn-block btn-tab ng-class:{'active': !filter.oneWay}" ng-click="filter.oneWay = false">Return</button>
         </div>
+
+        <label>Source City</label>
         <autocomplete placeholder="Enter Source City" val="filter.srcCity" values="allCities" is-city="true"></autocomplete>
+
+        <label>Destination City</label>
         <autocomplete placeholder="Enter Destination City" val="filter.destCity"  values="allCities" is-city="true"></autocomplete>
-        <autocomplete placeholder="Departure Date" val="filter.depDate" values="allDates"></autocomplete>
-        <autocomplete placeholder="Return Date" val="filter.retDate" values="allDates" ng-hide="filter.oneWay"></autocomplete>
+
+        <label>Departure Date</label>
+        <input type="date" class="form-control" placeholder="Departure Date" ng-model="filter.depDate">
+
+        <label ng-hide="filter.oneWay">Return Date</label>
+        <input type="date" class="form-control" placeholder="Return Date" ng-model="filter.retDate" ng-hide="filter.oneWay">
+
         <button class="btn btn-block" ng-click="search()">Search</button>
         <p class="err" ng-if="filter.err != ''">{{filter.err}}</p>
       </div>
@@ -51,7 +60,7 @@
           <div ng-hide="searched.oneWay">Return - {{searched.retDate}}</div>
         </div>
       </div>
-      <flight-card ng-repeat="flight in searched.flights" flight="flight" is-one-way="searched.oneWay"></flight-card>
+      <flight-card ng-repeat="flight in searched.flights" flight="flight" is-one-way="searched.oneWay" filter="filter"></flight-card>
     </div>
   </div>
 
