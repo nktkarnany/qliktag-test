@@ -47,24 +47,32 @@
       </div>
     </div>
     <div class="main">
-      <div class="loader" ng-if="!(!searched.loading && searched.flights.length > 0)">
+      <div class="loader" ng-if="!(!searched.loading && searched.flights.oneWay.length > 0)">
         <div class="spinner" ng-if="searched.loading"></div>
-        <span class="no-results" ng-if="!searched.loading && searched.flights.length == 0">No Flights For This Search</span>
+        <span class="no-results" ng-if="!searched.loading && searched.flights.oneWay.length == 0">No Flights For This Search</span>
       </div>
-      <div class="main-header" ng-if="!searched.loading && searched.flights.length > 0">
+      <div class="main-header" ng-if="!searched.loading && searched.flights.oneWay.length > 0">
         <div class="journey-city">
-          Pune > Delhi<span ng-hide="searched.oneWay"> > Pune</span>
+          {{filter.srcCity}} > {{filter.destCity}}<span ng-hide="searched.oneWay"> > {{filter.srcCity}}</span>
         </div>
         <div>
           <div>Depart - {{searched.depDate}}</div>
           <div ng-hide="searched.oneWay">Return - {{searched.retDate}}</div>
         </div>
       </div>
-      <flight-card ng-repeat="flight in searched.flights" flight="flight" is-one-way="searched.oneWay" filter="filter"></flight-card>
+      <div class="cards">
+        <div class="one-way-cards ng-class:{'flex-full': searched.oneWay}">
+          <flight-card ng-repeat="flight in searched.flights.oneWay" flight="flight" filter="filter"></flight-card>
+        </div>
+        <div class="two-way-cards" ng-if="!searched.oneWay">
+          <flight-card ng-repeat="flight in searched.flights.twoWay" flight="flight" filter="filter"></flight-card>
+        </div>
+      </div>
     </div>
   </div>
 
   <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="./node_modules/moment/min/moment.min.js"></script>
   <script type="text/javascript" src="./node_modules/angular/angular.min.js"></script>
   <script type="text/javascript" src="./node_modules/angular-resource/angular-resource.min.js"></script>
   <script type="text/javascript" src="./js/angular.rangeSlider.js"></script>

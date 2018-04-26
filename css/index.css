@@ -228,6 +228,22 @@ ul.dropdown-menu a {
   margin: auto 0;
 }
 
+.cards {
+  display: flex;
+}
+
+.one-way-cards: {
+  flex: 50%;
+}
+
+.flex-full {
+  flex: 100%;
+}
+
+.two-way-cards: {
+  flex: 50%;
+}
+
 .card {
   display: flex;
   border: 1px solid #ccc;
@@ -250,7 +266,7 @@ ul.dropdown-menu a {
 }
 
 .one-way {
-  flex: 40%;
+  flex: 80%;
   padding: 1em 0.5em;
   text-align: center;
   display: flex;
@@ -258,7 +274,7 @@ ul.dropdown-menu a {
 }
 
 .return {
-  flex: 40%;
+  flex: 80%;
   padding: 1em 0.5em;
   text-align: center;
   display: flex;
@@ -266,7 +282,7 @@ ul.dropdown-menu a {
 }
 
 .time {
-  font-size: 18px;
+  font-size: 16px;
   color: #4a4a4a;
 }
 

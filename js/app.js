@@ -31,7 +31,10 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
   
   // Literal to populate data after searching
   $scope.searched = {
-    flights: [],
+    flights: {
+      oneWay: [],
+      twoWay: []
+    },
     depDate: '',
     retDate: '',
     oneWay: false,
@@ -40,19 +43,21 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
   
   // search function
   var search = function () {
-    console.log($scope.filter);
     // validations for input fields in the search filter
     if ($scope.filter.srcCity == '') {
-      $scope.filter.err = "Please enter your source city.";
+      $scope.filter.err = "Please enter a source city.";
       return;
     } else if ($scope.filter.destCity == '') {
-      $scope.filter.err = "Please enter your destination city.";
+      $scope.filter.err = "Please enter a destination city.";
       return;
     } else if ($scope.filter.depDate == null) {
-      $scope.filter.err = "Please enter your departure date.";
+      $scope.filter.err = "Please enter a departure date.";
       return;
     } else if ($scope.filter.retDate == null && $scope.filter.oneWay == false) {
-      $scope.filter.err = "Please enter your departure date.";
+      $scope.filter.err = "Please enter a return date.";
+      return;
+    } else if (moment($scope.filter.depDate).isAfter($scope.filter.retDate) && $scope.filter.oneWay == false) {
+      $scope.filter.err = "Return date cannot be lesser than departure date.";
       return;
     } else {
       $scope.filter.err = '';
@@ -63,7 +68,10 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     // setting the loading to true to display the loader in the view
     $scope.searched.loading = true;
     
-    $scope.searched.flights = [];
+    $scope.searched.flights = {
+      oneWay: [],
+      twoWay: []
+    };
     
     // Fetching the searched results from the service which is built upon '$q' service of angularjs
     Flight.searchFlights($scope.filter).then(
@@ -126,6 +134,8 @@ app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', '$http', func
     
     var deferred = $q.defer();
     
+    var url = 'http://airsewa.gov.in/api/Web/AKS_GetFlightSchedule';
+
     var filteredFlights = [];
     
     var config = {
@@ -142,13 +152,29 @@ app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', '$http', func
       toTime:""
     };
 
-    $http.post('http://airsewa.gov.in/api/Web/AKS_GetFlightSchedule', data, config)
+    $http.post(url, data, config)
       .then(function (res) {
-      console.log(res);
-      if (res.data.errJson)
-        deferred.resolve({code: 200, data: res.data.errJson.airlineList});
-      else
-        deferred.reject({code: 404, data: []});
+
+      if (filterParams.oneWay) {
+        if (res.data.errJson)
+          deferred.resolve({code: 200, data: {oneWay: res.data.errJson.airlineList, twoWay: []}});
+        else
+          deferred.reject({code: 404, data: {oneWay: [], twoWay: []}});
+      } else {
+        data.OperationDate = $filter('date')(filterParams.retDate, 'dd-MMM-yyyy');
+        data.fromAirport = filterParams.destCity;
+        data.toAirport = filterParams.srcCity;
+        $http.post(url, data, config)
+          .then(function (retRes) {
+          if (retRes.data.errJson)
+            deferred.resolve({code: 200, data: {oneWay: res.data.errJson.airlineList, twoWay: retRes.data.errJson.airlineList}});
+          else
+            deferred.reject({code: 404, data: {oneWay: [], twoWay: []}});
+        }, function (retErr) {
+          deferred.reject({code: 404, data: retErr});
+        })
+      }
+
     }, function (err) {
       deferred.reject({code: 404, data: err});
     });
@@ -235,7 +261,6 @@ app.directive('flightCard', [function () {
     restrict: 'E',
     scope: {
       flight: '=',
-      isOneWay: '=',
       filter: '='
     },
     template: `
@@ -257,25 +282,10 @@ app.directive('flightCard', [function () {
                 <div class="city">{{filter.destCity}}</div>
               </div>
             </div>
-            <div class="return" ng-hide="isOneWay">
-              <div>
-                <div class="time">{{flight.departureTime}}</div>
-                <div class="city">{{filter.destCity}}</div>
-              </div>
-              <div>
-                <div class="flight">{{flight.airlineName}} - {{flight.flightNo}}</div>
-                <div><img src="./img/srp_arrow.svg"></div>
-                <div class="type">Return</div>
-              </div>
-              <div>
-                <div class="time">{{flight.arrivalTime}}</div>
-                <div class="city">{{filter.srcCity}}</div>
-              </div>
-            </div>
             <div class="action">
               <!--<div class="price" ng-if="isOneWay">₹{{flight.dep.price}}</div>
               <div class="price" ng-if="!isOneWay">₹{{flight.dep.price + flight.ret.price}}</div>-->
-              <button class="btn btn-primary">BOOK</button>
+              <button class="btn btn-primary">{{filter.oneWay ? 'BOOK' : 'SELECT'}}</button>
             </div>
           </div>
         </div>
