@@ -26,7 +26,9 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     depDate: new Date('15-Mar-2018'),
     retDate: '',
     err: '',
-    oneWay: true
+    oneWay: true,
+    srcCityName: 'Pune',
+    destCityName: 'Delhi'
   };
   
   // Literal to populate data after searching
@@ -37,6 +39,8 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
     },
     depDate: '',
     retDate: '',
+    srcCityName: '',
+    destCityName: '',
     oneWay: false,
     loading: false
   }
@@ -79,6 +83,8 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
         $scope.searched.flights = res.data;
         $scope.searched.depDate = $filter('date')($scope.filter.depDate, "dd-MMM-yyyy");
         $scope.searched.retDate = $filter('date')($scope.filter.retDate, "dd-MMM-yyyy");
+        $scope.searched.srcCityName = $scope.filter.srcCityName;
+        $scope.searched.destCityName = $scope.filter.destCityName;
         $scope.searched.oneWay = $scope.filter.oneWay;
         $scope.searched.loading = false;
       },
@@ -104,7 +110,7 @@ app.controller("mainCtrl", ['$scope', 'Flight', '$filter', function ($scope, Fli
 }]);
 
 // This service holds all the data for flights
-app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', '$http', function ($q, $filter, $timeout, JsonService, $http) {
+app.service('Flight', ['$q', '$filter', '$http', function ($q, $filter, $http) {
   
   // possible dates in the departure and return date input fields
   this.allDates = ['2nd May', '4th May', '6th May', '19th May'];
@@ -178,22 +184,6 @@ app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', '$http', func
     }, function (err) {
       deferred.reject({code: 404, data: err});
     });
-
-//    $timeout(function () {
-//      JsonService.allFlights.get({}, function (data) {
-//        var oneWayFlights = data.oneWay;
-//        var oneWayAndReturnFlights = data.return;
-//        if (filterParams.oneWay)
-//          filteredFlights = $filter('flightsFilter')(oneWayFlights, filterParams);
-//        else
-//          filteredFlights = $filter('flightsFilter')(oneWayAndReturnFlights, filterParams);
-//
-//        if (filteredFlights)
-//          deferred.resolve({code: 200, data: filteredFlights});
-//        else
-//          deferred.reject({code: 404, data: []});
-//      });
-//    }, 1000);
     
     return deferred.promise;
   }
@@ -202,7 +192,7 @@ app.service('Flight', ['$q', '$filter', '$timeout', 'JsonService', '$http', func
 
 // this service fetches the json file from the data directory
 app.service('JsonService', ['$resource', function($resource) {
-  this.allFlights = $resource('/data/allFlights.json');
+  this.airports = $resource('/data/airports.json');
 }]);
 
 // time filter for dates of flights schedule
@@ -217,20 +207,22 @@ app.filter('onlyTime', ['$filter', function ($filter) {
 }]);
 
 // a reusable autocomplete input elements used for all the input types in the search field
-app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filter) {
+app.directive('autocomplete', ['$timeout', '$filter', 'JsonService', function ($timeout, $filter, JsonService) {
   return {
     restrict: 'E',
     scope: {
       placeholder: '@',
       term: '=val',
-      values: '=',
-      isCity: '@'
+      isCity: '@',
+      cityName: '='
     },
     controller: function ($scope) {
       
       $scope.search = function (s) {
         $scope.open = true;
-        $scope.items = $filter('filter')($scope.values, s);
+        JsonService.airports.get({}, function (data) {
+          $scope.items = $filter('filter')(data.airports, s);
+        });
       }
       
       $scope.selectItem = function (item) {
@@ -239,6 +231,7 @@ app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filte
         else
           $scope.term = item;
         $scope.open = false;
+        $scope.cityName = item.city;
       }
       
       $scope.hide = function () {
@@ -249,7 +242,7 @@ app.directive('autocomplete', ['$timeout', '$filter', function ($timeout, $filte
     template: `<div class="dropdown ng-class:{'open': open}">
                   <input type="text" class="form-control" placeholder="{{placeholder}}" aria-haspopup="true" aria-expanded="false" ng-model="term" ng-change="search(term)" ng-focus="search(term)" ng-blur="hide()">
                   <ul class="dropdown-menu" aria-labelledby="autocomplete">
-                    <li ng-repeat="item in items" ng-mousedown="selectItem(item)"><a href=""><span ng-if="isCity">{{item.name}} - {{item.code}}</span><span ng-if="!isCity">{{item}}</span></a></li>
+                    <li ng-repeat="item in items" ng-mousedown="selectItem(item)"><a href=""><span ng-if="isCity">{{item.city}} - {{item.code}}</span><span ng-if="!isCity">{{item}}</span></a></li>
                   </ul>
                 </div>`
     };
@@ -261,7 +254,7 @@ app.directive('flightCard', [function () {
     restrict: 'E',
     scope: {
       flight: '=',
-      filter: '='
+      searched: '='
     },
     template: `
       <div class="card">
@@ -270,7 +263,7 @@ app.directive('flightCard', [function () {
             <div class="one-way">
               <div>
                 <div class="time">{{flight.departureTime | onlyTime}}</div>
-                <div class="city">{{filter.srcCity}}</div>
+                <div class="city">{{searched.srcCityName}}</div>
               </div>
               <div>
                 <div class="flight">{{flight.airlineName}} - {{flight.flightNo}}</div>
@@ -279,13 +272,13 @@ app.directive('flightCard', [function () {
               </div>
               <div>
                 <div class="time">{{flight.arrivalTime | onlyTime}}</div>
-                <div class="city">{{filter.destCity}}</div>
+                <div class="city">{{searched.destCityName}}</div>
               </div>
             </div>
             <div class="action">
               <!--<div class="price" ng-if="isOneWay">₹{{flight.dep.price}}</div>
               <div class="price" ng-if="!isOneWay">₹{{flight.dep.price + flight.ret.price}}</div>-->
-              <button class="btn btn-primary">{{filter.oneWay ? 'BOOK' : 'SELECT'}}</button>
+              <button class="btn btn-primary">{{searched.oneWay ? 'BOOK' : 'SELECT'}}</button>
             </div>
           </div>
         </div>

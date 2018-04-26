@@ -27,10 +27,10 @@
         </div>
 
         <label>Source City</label>
-        <autocomplete placeholder="Enter Source City" val="filter.srcCity" values="allCities" is-city="true"></autocomplete>
+        <autocomplete placeholder="Enter Source City" val="filter.srcCity" is-city="true" city-name="filter.srcCityName"></autocomplete>
 
         <label>Destination City</label>
-        <autocomplete placeholder="Enter Destination City" val="filter.destCity"  values="allCities" is-city="true"></autocomplete>
+        <autocomplete placeholder="Enter Destination City" val="filter.destCity" is-city="true" city-name="filter.destCityName"></autocomplete>
 
         <label>Departure Date</label>
         <input type="date" class="form-control" placeholder="Departure Date" ng-model="filter.depDate">
@@ -53,7 +53,7 @@
       </div>
       <div class="main-header" ng-if="!searched.loading && searched.flights.oneWay.length > 0">
         <div class="journey-city">
-          {{filter.srcCity}} > {{filter.destCity}}<span ng-hide="searched.oneWay"> > {{filter.srcCity}}</span>
+          {{searched.srcCityName}} > {{searched.destCityName}}<span ng-hide="searched.oneWay"> > {{searched.srcCityName}}</span>
         </div>
         <div>
           <div>Depart - {{searched.depDate}}</div>
@@ -62,10 +62,10 @@
       </div>
       <div class="cards">
         <div class="one-way-cards ng-class:{'flex-full': searched.oneWay}">
-          <flight-card ng-repeat="flight in searched.flights.oneWay" flight="flight" filter="filter"></flight-card>
+          <flight-card ng-repeat="flight in searched.flights.oneWay" flight="flight" searched="searched"></flight-card>
         </div>
         <div class="two-way-cards" ng-if="!searched.oneWay">
-          <flight-card ng-repeat="flight in searched.flights.twoWay" flight="flight" filter="filter"></flight-card>
+          <flight-card ng-repeat="flight in searched.flights.twoWay" flight="flight" searched="searched"></flight-card>
         </div>
       </div>
     </div>
